@@ -1,9 +1,10 @@
 load("@crate_index//:defs.bzl", "aliases", "all_crate_deps")
 load("@rules_rust//rust:defs.bzl", "rust_binary", "rust_test")
 
+
 rust_binary(
     name = "raytracer",
-    srcs = ["src/main.rs"],
+    srcs = glob(["src/**/*.rs"]),
     aliases = aliases(),
     deps = all_crate_deps(
         normal = True

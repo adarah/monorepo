@@ -22,7 +22,7 @@ load("@rules_rust//crate_universe:defs.bzl", "crates_repository")
 crates_repository(
     name = "crate_index",
     lockfile = "//raytracer:Cargo.lock",
-    manifests = ["//raytracer:Cargo.toml"],
+    manifests = ["//raytracer:Cargo.toml"]
 )
 
 load("@crate_index//:defs.bzl", "crate_repositories")
