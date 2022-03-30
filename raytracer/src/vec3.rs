@@ -2,17 +2,18 @@ use std::{fmt::Display, ops};
 
 const MAX_PIXEL_VALUE: f64 = 255.0;
 
+#[derive(Clone, Copy, Debug)]
 pub struct Vec3 {
-    x: f64,
-    y: f64,
-    z: f64,
+    pub x: f64,
+    pub y: f64,
+    pub z: f64,
 }
 
 pub type Color = Vec3;
 pub type Point3 = Vec3;
 
 impl Vec3 {
-    pub fn new(x: f64, y: f64, z: f64) -> Vec3 {
+    pub const fn new(x: f64, y: f64, z: f64) -> Vec3 {
         Vec3 { x, y, z }
     }
 
@@ -25,8 +26,7 @@ impl Vec3 {
     }
 
     pub fn unit(self) -> Vec3 {
-        let len = self.length();
-        self / len
+        self / self.length()
     }
 
     pub fn dot(self, rhs: Vec3) -> f64 {
@@ -107,6 +107,14 @@ impl ops::MulAssign<f64> for Vec3 {
         self.x *= rhs;
         self.y *= rhs;
         self.z *= rhs;
+    }
+}
+
+impl ops::Mul<Vec3> for f64 {
+    type Output = Vec3;
+
+    fn mul(self, rhs: Vec3) -> Self::Output {
+        Vec3::new(rhs.x * self, rhs.y * self, rhs.z * self)
     }
 }
 
