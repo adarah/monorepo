@@ -64,14 +64,14 @@ impl<'a> Ray<'a> {
         let oc = *self.origin - center;
 
         let a = self.direction.dot(*self.direction);
-        let b = (2.0 * *self.direction).dot(oc);
+        let half_b = (*self.direction).dot(oc);
         let c = oc.dot(oc) - radius.powi(2); 
-        let delta = b.powi(2) - 4.0 * a * c;
+        let delta = half_b.powi(2) - a * c;
 
         if delta < 0.0 {
             return None
         }
-        let root = (-b - delta.sqrt()) / (2.0 * a);
+        let root = (-half_b - delta.sqrt()) /  a;
 
         return Some(self.at(root))
     }
