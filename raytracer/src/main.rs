@@ -11,7 +11,7 @@ use crate::{
 
 // Image
 const ASPECT_RATIO: f64 = 16.0 / 9.0;
-const IMG_WIDTH: usize = 400;
+const IMG_WIDTH: usize = 2560;
 const IMG_HEIGHT: usize = ((IMG_WIDTH as f64) / ASPECT_RATIO) as usize;
 
 // Camera
@@ -34,7 +34,7 @@ fn main() -> Result<()> {
 
     print!("P3\n{IMG_WIDTH} {IMG_HEIGHT}\n255\n");
     for j in (0..IMG_HEIGHT).rev() {
-        eprintln!("Lines remaining: {j}");
+        // eprintln!("Lines remaining: {j}");
         for i in 0..IMG_WIDTH {
             let x_norm = (i as f64) / (IMG_WIDTH - 1) as f64;
             let y_norm = (j as f64) / (IMG_HEIGHT - 1) as f64;
