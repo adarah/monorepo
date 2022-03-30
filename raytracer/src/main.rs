@@ -51,20 +51,29 @@ fn main() -> Result<()> {
 impl<'a> Ray<'a> {
     pub fn color(self) -> Color {
         let dir = self.direction.unit();
-        if self.hit_sphere(Point3::new(0.0, 0.0, -1.0), 0.5) {
-            return RED;
+        let sphere_center = Point3::new(0.0, 0.0, -1.0);
+        if let Some(p) = self.hit_sphere(sphere_center, 0.5) {
+            let n = (p - sphere_center).unit();
+            return 0.5 * (n + Vec3::new(1.0, 1.0, 1.0));
         }
         let t = 0.5 * (dir.y + 1.0);
         return (1.0 - t) * WHITE + t * BLUE;
     }
 
-    fn hit_sphere(self, center: Point3, radius: f64) -> bool {
+    fn hit_sphere(self, center: Point3, radius: f64) -> Option<Point3> {
         let oc = *self.origin - center;
+
         let a = self.direction.dot(*self.direction);
         let b = (2.0 * *self.direction).dot(oc);
         let c = oc.dot(oc) - radius.powi(2); 
         let delta = b.powi(2) - 4.0 * a * c;
-        return delta > 0.0;
+
+        if delta < 0.0 {
+            return None
+        }
+        let root = (-b - delta.sqrt()) / (2.0 * a);
+
+        return Some(self.at(root))
     }
 
 }
