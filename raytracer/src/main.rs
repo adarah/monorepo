@@ -1,17 +1,24 @@
+mod hittable;
 mod ray;
+mod scene;
+mod sphere;
 mod vec3;
 
 use anyhow::Result;
+use hittable::HitRecord;
 use vec3::Color;
 
 use crate::{
+    hittable::Hittable,
     ray::Ray,
+    scene::Scene,
+    sphere::Sphere,
     vec3::{Point3, Vec3},
 };
 
 // Image
 const ASPECT_RATIO: f64 = 16.0 / 9.0;
-const IMG_WIDTH: usize = 2560;
+const IMG_WIDTH: usize = 400;
 const IMG_HEIGHT: usize = ((IMG_WIDTH as f64) / ASPECT_RATIO) as usize;
 
 // Camera
@@ -32,16 +39,22 @@ fn main() -> Result<()> {
     let depth = Vec3::new(0.0, 0.0, FOCAL_LENGTH);
     let lower_left_corner = origin - horizontal / 2.0 - vertical / 2.0 - depth;
 
+    let scene = Scene::new(vec![
+        Box::new(Sphere::new(Point3::new(0.0, 0.0, -1.0), 0.5)),
+        Box::new(Sphere::new(Point3::new(0.0, -100.5, -1.0), 100.0)),
+    ]);
+
     print!("P3\n{IMG_WIDTH} {IMG_HEIGHT}\n255\n");
     for j in (0..IMG_HEIGHT).rev() {
-        // eprintln!("Lines remaining: {j}");
+        eprintln!("Lines remaining: {j}");
         for i in 0..IMG_WIDTH {
             let x_norm = (i as f64) / (IMG_WIDTH - 1) as f64;
             let y_norm = (j as f64) / (IMG_HEIGHT - 1) as f64;
 
             let direction = lower_left_corner + x_norm * horizontal + y_norm * vertical - origin;
             let r = Ray::new(&origin, &direction);
-            println!("{}", r.color());
+            let hit_rec = scene.hit(&r, 0.0, f64::MAX);
+            println!("{}", r.color(hit_rec));
         }
     }
 
@@ -49,33 +62,14 @@ fn main() -> Result<()> {
 }
 
 impl<'a> Ray<'a> {
-    pub fn color(self) -> Color {
+    pub fn color(self, hit_rec: Option<HitRecord>) -> Color {
+        if let Some(hit) = hit_rec {
+            return 0.5 * (hit.normal + Vec3::new(1.0, 1.0, 1.0));
+        } 
         let dir = self.direction.unit();
-        let sphere_center = Point3::new(0.0, 0.0, -1.0);
-        if let Some(p) = self.hit_sphere(sphere_center, 0.5) {
-            let n = (p - sphere_center).unit();
-            return 0.5 * (n + Vec3::new(1.0, 1.0, 1.0));
-        }
         let t = 0.5 * (dir.y + 1.0);
         return (1.0 - t) * WHITE + t * BLUE;
     }
-
-    fn hit_sphere(self, center: Point3, radius: f64) -> Option<Point3> {
-        let oc = *self.origin - center;
-
-        let a = self.direction.dot(*self.direction);
-        let half_b = (*self.direction).dot(oc);
-        let c = oc.dot(oc) - radius.powi(2); 
-        let delta = half_b.powi(2) - a * c;
-
-        if delta < 0.0 {
-            return None
-        }
-        let root = (-half_b - delta.sqrt()) /  a;
-
-        return Some(self.at(root))
-    }
-
 }
 
 #[cfg(test)]
