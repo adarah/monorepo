@@ -1,10 +1,5 @@
 use crate::{vec3::{Point3, Vec3, Color}, hittable::HitRecord};
 
-// Colors
-const RED: Color = Color::new(1.0, 0.0, 0.0);
-const GREEN: Color = Color::new(0.0, 1.0, 0.0);
-const BLUE: Color = Color::new(0.5, 0.7, 1.0);
-const WHITE: Color = Color::new(1.0, 1.0, 1.0);
 
 pub struct Ray {
     pub origin: Point3,
@@ -26,6 +21,6 @@ impl Ray {
         }
         let dir = self.direction.unit();
         let t = 0.5 * (dir.y + 1.0);
-        return (1.0 - t) * WHITE + t * BLUE;
+        return (1.0 - t) * Color::WHITE + t * Color::LIGHT_BLUE;
     }
 }

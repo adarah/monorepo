@@ -10,9 +10,18 @@ pub struct Vec3 {
 }
 
 pub type Color = Vec3;
+
 pub type Point3 = Vec3;
 
 impl Vec3 {
+    // Colors
+    pub const BLACK: Color = Color::new(0.0, 1.0, 1.0);
+    pub const RED: Color = Color::new(1.0, 0.0, 0.0);
+    pub const GREEN: Color = Color::new(0.0, 1.0, 0.0);
+    pub const BLUE: Color = Color::new(0.0, 0.0, 1.0);
+    pub const LIGHT_BLUE: Color = Color::new(0.5, 0.7, 1.0);
+    pub const WHITE: Color = Color::new(1.0, 1.0, 1.0);
+
     pub const fn new(x: f64, y: f64, z: f64) -> Vec3 {
         Vec3 { x, y, z }
     }
@@ -47,9 +56,9 @@ impl Display for Vec3 {
         write!(
             f,
             "{} {} {}",
-            (MAX_PIXEL_VALUE * self.x).floor(),
-            (MAX_PIXEL_VALUE * self.y).floor(),
-            (MAX_PIXEL_VALUE * self.z).floor()
+            (MAX_PIXEL_VALUE * self.x).clamp(0.0, 255.0).floor(),
+            (MAX_PIXEL_VALUE * self.y).clamp(0.0, 255.0).floor(),
+            (MAX_PIXEL_VALUE * self.z).clamp(0.0, 255.0).floor(),
         )
     }
 }
