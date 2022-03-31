@@ -14,18 +14,15 @@ impl Scene {
 
     pub fn hit(&self, ray: &Ray, t_min: f64, t_max: f64) -> Option<HitRecord> {
         let mut closest_hit: Option<HitRecord> = None;
-        let mut t_max = t_max;
         for obj in self.objects.iter() {
-            let curr_hit = obj.hit(ray, t_min, t_max);
+            let curr_hit = obj.hit(
+                ray,
+                t_min,
+                closest_hit.as_ref().map(|h| h.time).unwrap_or(t_max),
+            );
             match (&curr_hit, &closest_hit) {
-                (Some(x), None) => {
-                    t_max = x.time;
-                    closest_hit = curr_hit;
-                }
-                (Some(x), Some(y)) if x.time < y.time => {
-                    t_max = x.time;
-                    closest_hit = curr_hit;
-                }
+                (Some(_), None) => closest_hit = curr_hit,
+                (Some(x), Some(y)) if x.time < y.time => closest_hit = curr_hit,
                 _ => (),
             }
         }
