@@ -17,9 +17,9 @@ impl Sphere {
 
 impl Hittable for Sphere {
     fn hit(&self, ray: &Ray, t_min: f64, t_max: f64) -> Option<HitRecord> {
-        let oc = *ray.origin - self.center;
+        let oc = ray.origin - self.center;
 
-        let a = ray.direction.dot(*ray.direction);
+        let a = ray.direction.dot(ray.direction);
         let half_b = ray.direction.dot(oc);
         let c = oc.dot(oc) - self.radius.powi(2);
         let delta = half_b.powi(2) - a * c;
@@ -39,10 +39,11 @@ impl Hittable for Sphere {
             }
         }
 
+
         let point = ray.at(root);
         let normal = (point - self.center).unit();
         // Dot product of vectors in opposite directions is negative.
-        let front_face = normal.dot(*ray.direction) < 0.0;
+        let front_face = normal.dot(ray.direction) < 0.0;
 
         let record = HitRecord {
             time: root,
