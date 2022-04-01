@@ -1,10 +1,13 @@
-use crate::{ray::Ray, vec3::{Point3, Vec3}};
+use std::rc::Rc;
+
+use crate::{ray::Ray, vec3::{Point3, Vec3}, material::Material};
 
 pub struct HitRecord {
     pub point: Point3,
     pub normal: Vec3,
     pub time: f64,
     pub front_face: bool,
+    pub material: Rc<dyn Material>,
 }
 
 pub trait Hittable {

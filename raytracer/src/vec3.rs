@@ -1,4 +1,7 @@
+use rand::Rng;
 use std::{fmt::Display, ops};
+
+use crate::RNG;
 
 const MAX_PIXEL_VALUE: f64 = 255.0;
 
@@ -49,6 +52,28 @@ impl Vec3 {
             self.x * rhs.y - self.y * rhs.x,
         )
     }
+
+    // Returns a random point in the unit sphere around self (self is Point3)
+    pub fn rand_in_unit_sphere() -> Point3 {
+        loop {
+            let x: f64 = RNG.with(|rng| rng.borrow_mut().gen_range(-1.0..=1.0));
+            let y: f64 = RNG.with(|rng| rng.borrow_mut().gen_range(-1.0..=1.0));
+            let z: f64 = RNG.with(|rng| rng.borrow_mut().gen_range(-1.0..=1.0));
+            let p = Point3::new(x, y, z);
+            if p.length_squared() < 1.0 {
+                return p;
+            }
+        }
+    }
+    
+    pub fn near_zero(&self) -> bool {
+        let s = 1e-8;
+        return self.x.abs() < s && self.y.abs() < s && self.z.abs() < s;
+    }
+    
+    pub fn reflect(self, normal: &Vec3) -> Vec3 {
+        self - 2.0 * self.dot(*normal) * *normal
+    }
 }
 
 impl Display for Vec3 {
@@ -56,9 +81,9 @@ impl Display for Vec3 {
         write!(
             f,
             "{} {} {}",
-            (MAX_PIXEL_VALUE * self.x).clamp(0.0, 255.0).floor(),
-            (MAX_PIXEL_VALUE * self.y).clamp(0.0, 255.0).floor(),
-            (MAX_PIXEL_VALUE * self.z).clamp(0.0, 255.0).floor(),
+            (MAX_PIXEL_VALUE * self.x.sqrt()).clamp(0.0, 255.0).floor(),
+            (MAX_PIXEL_VALUE * self.y.sqrt()).clamp(0.0, 255.0).floor(),
+            (MAX_PIXEL_VALUE * self.z.sqrt()).clamp(0.0, 255.0).floor(),
         )
     }
 }

@@ -1,17 +1,20 @@
+use std::rc::Rc;
+
 use crate::{
     hittable::{HitRecord, Hittable},
     ray::Ray,
-    vec3::Point3,
+    vec3::Point3, material::Material,
 };
 
 pub struct Sphere {
     center: Point3,
     radius: f64,
+    material: Rc<dyn Material>
 }
 
 impl Sphere {
-    pub fn new(center: Point3, radius: f64) -> Self {
-        Sphere { center, radius }
+    pub fn new(center: Point3, radius: f64, material: Rc<dyn Material>) -> Self {
+        Sphere { center, radius, material }
     }
 }
 
@@ -52,6 +55,7 @@ impl Hittable for Sphere {
             // We want normal to always be opposite of the ray, so return the negation.
             normal: if front_face { normal } else { -normal },
             front_face,
+            material: Rc::clone(&self.material),
         };
 
         return Some(record);

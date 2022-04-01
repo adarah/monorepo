@@ -1,14 +1,19 @@
 mod camera;
 mod hittable;
+mod material;
 mod ray;
 mod scene;
 mod sphere;
 mod vec3;
 
+use std::{cell::RefCell, rc::Rc};
+
 use anyhow::Result;
+use rand::{prelude::SmallRng, Rng, SeedableRng};
 
 use crate::{
     camera::Camera,
+    material::{lambertian::Lambertian, metal::Metal, Material},
     scene::Scene,
     sphere::Sphere,
     vec3::{Color, Point3},
@@ -20,10 +25,32 @@ const IMG_WIDTH: usize = 400;
 const IMG_HEIGHT: usize = ((IMG_WIDTH as f64) / ASPECT_RATIO) as usize;
 const AA_SAMPLES: usize = 100;
 
+thread_local! {
+    static RNG: RefCell<SmallRng> = RefCell::new(SmallRng::from_entropy())
+}
+
 fn main() -> Result<()> {
+    let red_lamb = Lambertian::new(Color::RED);
+    let green_lamb = Lambertian::new(Color::GREEN);
+    let silver_metal: Rc<dyn Material> = Rc::new(Metal::new(Color::new(0.8, 0.8, 0.8)));
+    let gold_metal: Rc<dyn Material> = Rc::new(Metal::new(Color::new(0.8, 0.6, 0.2)));
     let scene = Scene::new(vec![
-        Box::new(Sphere::new(Point3::new(0.0, 0.0, -1.0), 0.5)),
-        Box::new(Sphere::new(Point3::new(0.0, -100.5, -1.0), 100.0)),
+        Box::new(Sphere::new(
+            Point3::new(0.0, 0.0, -1.0),
+            0.5,
+            Rc::new(red_lamb),
+        )),
+        Box::new(Sphere::new(Point3::new(-1.0, 0.0, -1.0), 0.5, Rc::clone(&silver_metal))),
+        Box::new(Sphere::new(
+            Point3::new(1.0, 0.0, -1.0),
+            0.5,
+            Rc::clone(&gold_metal),
+        )),
+        Box::new(Sphere::new(
+            Point3::new(0.0, -100.5, -1.0),
+            100.0,
+            Rc::new(green_lamb),
+        )),
     ]);
 
     let camera: Camera = Default::default();
@@ -34,12 +61,13 @@ fn main() -> Result<()> {
         for i in 0..IMG_WIDTH {
             let mut c = Color::BLACK;
             for _ in 0..AA_SAMPLES {
-                let x_norm = (i as f64 + rand::random::<f64>()) / (IMG_WIDTH - 1) as f64;
-                let y_norm = (j as f64 + rand::random::<f64>()) / (IMG_HEIGHT - 1) as f64;
+                let rand_0 = RNG.with(|rng| rng.borrow_mut().gen_range(0.0..1.0));
+                let rand_1 = RNG.with(|rng| rng.borrow_mut().gen_range(0.0..1.0));
+                let x_norm = (i as f64 + rand_0) / (IMG_WIDTH - 1) as f64;
+                let y_norm = (j as f64 + rand_1) / (IMG_HEIGHT - 1) as f64;
 
                 let r = camera.shoot_ray(x_norm, y_norm);
-                let hit_rec = scene.hit(&r, 0.0, f64::MAX);
-                c += r.color(hit_rec);
+                c += r.color(&scene);
             }
             println!("{}", c / AA_SAMPLES as f64);
         }
