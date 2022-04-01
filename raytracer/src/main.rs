@@ -40,7 +40,11 @@ fn main() -> Result<()> {
             0.5,
             Rc::new(red_lamb),
         )),
-        Box::new(Sphere::new(Point3::new(-1.0, 0.0, -1.0), 0.5, Rc::clone(&silver_metal))),
+        Box::new(Sphere::new(
+            Point3::new(-1.0, 0.0, -1.0),
+            0.5,
+            Rc::clone(&silver_metal),
+        )),
         Box::new(Sphere::new(
             Point3::new(1.0, 0.0, -1.0),
             0.5,
@@ -59,21 +63,26 @@ fn main() -> Result<()> {
     for j in (0..IMG_HEIGHT).rev() {
         eprintln!("Lines remaining: {j}");
         for i in 0..IMG_WIDTH {
-            let mut c = Color::BLACK;
-            for _ in 0..AA_SAMPLES {
-                let rand_0 = RNG.with(|rng| rng.borrow_mut().gen_range(0.0..1.0));
-                let rand_1 = RNG.with(|rng| rng.borrow_mut().gen_range(0.0..1.0));
-                let x_norm = (i as f64 + rand_0) / (IMG_WIDTH - 1) as f64;
-                let y_norm = (j as f64 + rand_1) / (IMG_HEIGHT - 1) as f64;
-
-                let r = camera.shoot_ray(x_norm, y_norm);
-                c += r.color(&scene);
-            }
-            println!("{}", c / AA_SAMPLES as f64);
+            let color = multi_sample(&camera, &scene, i, j, AA_SAMPLES);
+            println!("{color}");
         }
     }
 
     Ok(())
+}
+
+fn multi_sample(camera: &Camera, scene: &Scene, pixel_x: usize, pixel_y: usize, num_samples: usize) -> Color {
+    let mut c = Color::BLACK;
+    for _ in 0..num_samples {
+        let rand_0 = RNG.with(|rng| rng.borrow_mut().gen_range(0.0..1.0));
+        let rand_1 = RNG.with(|rng| rng.borrow_mut().gen_range(0.0..1.0));
+        let x_norm = (pixel_x as f64 + rand_0) / (IMG_WIDTH - 1) as f64;
+        let y_norm = (pixel_y as f64 + rand_1) / (IMG_HEIGHT - 1) as f64;
+
+        let r = camera.shoot_ray(x_norm, y_norm);
+        c += r.color(&scene);
+    }
+    return c / num_samples as f64;
 }
 
 #[cfg(test)]
