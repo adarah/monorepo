@@ -1,1 +1,1 @@
-worker: bin/satire-bot
+worker: bin/event-notifier
