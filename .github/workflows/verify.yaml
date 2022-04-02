@@ -1,4 +1,4 @@
-name: Validate
+name: Verify
 
 on:
   pull_request:
@@ -24,10 +24,6 @@ jobs:
       - name: Print version
         run: |
           bazel version
-  
-      - name: Lint
-        run: |
-          terraform fmt -check -recursive
 
       - name: Build
         run: |
@@ -36,3 +32,4 @@ jobs:
       - name: Test
         run: |
           bazel test //...
+    
