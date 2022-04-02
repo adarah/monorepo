@@ -1,4 +1,4 @@
-module lucasharada.com/satirebot
+module github.com/adarah/satirebot
 
 go 1.18
 
