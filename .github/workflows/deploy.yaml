@@ -28,13 +28,14 @@ jobs:
         run: |
           bazel test //...
 
-  deploy:
+  plan:
     runs-on: ubuntu-latest
     environment: production
     defaults:
       run:
         working-directory: infrastructure
 
+    if: github.event_name == 'pull_request'
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -43,6 +44,7 @@ jobs:
       working-directory: ${{ env.tf_actions_working_dir }}
     steps:
       - uses: actions/checkout@v3
+
       - uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: ~1.1
@@ -63,11 +65,9 @@ jobs:
       - name: Terraform plan
         id: plan
         run: terraform plan -no-color
-        if: github.event_name == 'pull_request'
         continue-on-error: true
 
       - uses: actions/github-script@v6
-        if: github.event_name == 'pull_request'
         env:
           PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
         with:
@@ -85,15 +85,15 @@ jobs:
             </details>
 
             #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
-            
+
             <details><summary>Show Plan</summary>
-            
+
             \`\`\`\n
             ${process.env.PLAN}
             \`\`\`
-            
+
             </details>
-            
+
             *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`infrastructure\`, Workflow: \`${{ github.workflow }}\`*`;
               
             github.rest.issues.createComment({
@@ -102,12 +102,25 @@ jobs:
               repo: context.repo.repo,
               body: output
             })
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    environment: production
+    defaults:
+      run:
+        working-directory: infrastructure
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+      HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
+      working-directory: ${{ env.tf_actions_working_dir }}
+    steps:
+      - uses: actions/checkout@v3
 
-      - name: Terraform Plan Status
-        if: steps.plan.outcome == 'failure'
-        run: exit 1
+      - uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: ~1.1
 
       - name: Terraform Apply
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: terraform apply -auto-approve
-      
