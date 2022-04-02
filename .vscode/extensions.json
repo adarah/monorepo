@@ -1,5 +1,9 @@
 {
     "recommendations": [
-        "golang.Go"
+        "golang.go",
+        "matklad.rust-analyzer",
+        "bazelbuild.vscode-bazel",
+        "piotrpalarz.vscode-gitignore-generator",
+        "hashicorp.terraform"
     ]
 }
