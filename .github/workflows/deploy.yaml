@@ -8,20 +8,39 @@ on:
     branches:
       - main
 
-defaults:
-  run:
-    working-directory: infrastructure
-
-
 jobs:
-  deploy-prod:
+  test:
     runs-on: ubuntu-latest
-    environment: production
-
     steps:
       - uses: actions/checkout@v3
-      - name: Terraform version
-        run: terraform version
+
+      - name: Mount bazel cache
+        uses: actions/cache@v3
+        with:
+          path: "/home/runner/.cache/bazel"
+          key: bazel
+
+      - name: Build
+        run: |
+          bazel build //...
+
+      - name: Test
+        run: |
+          bazel test //...
+
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    defaults:
+      run:
+        working-directory: infrastructure
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+      HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
+    steps:
+      - uses: actions/checkout@v3
 
       - name: Terraform format
         id: format
