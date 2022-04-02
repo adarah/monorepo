@@ -20,6 +20,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      - name: echo stuff
+        run: |
+          echo key id: $AWS_ACCESS_KEY_ID
+          echo secret key: $AWS_SECRET_ACCESS_KEY
+          echo foobar
 
       - name: Terraform format
         id: format
