@@ -21,10 +21,6 @@ jobs:
           path: "/home/runner/.cache/bazel"
           key: bazel
 
-      - name: Print version
-        run: |
-          bazel version
-
       - name: Build
         run: |
           bazel build //...
