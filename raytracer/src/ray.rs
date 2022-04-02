@@ -30,9 +30,7 @@ impl Ray {
             if let Some((scattered, attenuation)) = (*hit.material).scatter(self, &hit) {
                 return attenuation * scattered.do_color(scene, depth + 1);
             }
-            let target = hit.point + hit.normal + Point3::rand_in_unit_sphere().unit();
-            let diffuse_ray = Ray::new(hit.point, target - hit.point);
-            return 0.5 * diffuse_ray.do_color(scene, depth + 1);
+            return Color::BLACK;
         }
 
         return self.background_color();

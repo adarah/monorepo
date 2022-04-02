@@ -21,9 +21,9 @@ use crate::{
 
 // Image
 const ASPECT_RATIO: f64 = 16.0 / 9.0;
-const IMG_WIDTH: usize = 400;
+const IMG_WIDTH: usize = 2560;
 const IMG_HEIGHT: usize = ((IMG_WIDTH as f64) / ASPECT_RATIO) as usize;
-const AA_SAMPLES: usize = 100;
+const AA_SAMPLES: usize = 8;
 
 thread_local! {
     static RNG: RefCell<SmallRng> = RefCell::new(SmallRng::from_entropy())
@@ -63,7 +63,7 @@ fn main() -> Result<()> {
     for j in (0..IMG_HEIGHT).rev() {
         eprintln!("Lines remaining: {j}");
         for i in 0..IMG_WIDTH {
-            let color = multi_sample(&camera, &scene, i, j, AA_SAMPLES);
+            let color = get_pixel_color(&camera, &scene, i, j, AA_SAMPLES);
             println!("{color}");
         }
     }
@@ -71,7 +71,7 @@ fn main() -> Result<()> {
     Ok(())
 }
 
-fn multi_sample(camera: &Camera, scene: &Scene, pixel_x: usize, pixel_y: usize, num_samples: usize) -> Color {
+fn get_pixel_color(camera: &Camera, scene: &Scene, pixel_x: usize, pixel_y: usize, num_samples: usize) -> Color {
     let mut c = Color::BLACK;
     for _ in 0..num_samples {
         let rand_0 = RNG.with(|rng| rng.borrow_mut().gen_range(0.0..1.0));
