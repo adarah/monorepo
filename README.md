@@ -1,5 +1,5 @@
-# My monorepo
-This monorepo contains the recent projects I've been working on.
+# Hi there
+If you're reading this from my profile you might be confused, but this README is intended for [my main monorepo](https://github.com/Adarah/adarah) which contains the recent projects I've been working on.
 
 ## Project overview
 Below is a short description of each project. You can get more details in each project's README.
