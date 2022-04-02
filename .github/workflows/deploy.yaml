@@ -12,9 +12,12 @@ defaults:
   run:
     working-directory: infrastructure
 
+
 jobs:
   deploy-prod:
     runs-on: ubuntu-latest
+    environment: production
+
     steps:
       - uses: actions/checkout@v3
 
