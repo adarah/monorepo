@@ -8,3 +8,5 @@ build:strict --output_groups=+clippy_checks
 
 # Silences all bazel output
 run --ui_event_filters=-info,-stdout,-stderr --noshow_progress 
+
+build --remote_cache=https://storage.googleapis.com/bazel_cache_bucket_adarah --google_default_credentials
