@@ -1,1 +1,1 @@
-worker: bin/event-notifier
+worker: bin/event_notifier
