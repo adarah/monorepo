@@ -1,0 +1,23 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
+
+go_library(
+    name = "event_notifier_lib",
+    srcs = ["event_notifier.go"],
+    importpath = "github.com/adarah/satirebot/cmd/event_notifier",
+    visibility = ["//visibility:private"],
+    deps = [
+        "//satire-bot/config",
+        "//satire-bot/internal/discord",
+        "//satire-bot/internal/notifier",
+        "@com_github_aws_aws_sdk_go_v2_config//:go_default_library",
+        "@com_github_aws_aws_sdk_go_v2_service_lambda//:go_default_library",
+        "@com_github_bwmarrin_discordgo//:go_default_library",
+        "@com_github_kelseyhightower_envconfig//:go_default_library",
+    ],
+)
+
+go_binary(
+    name = "event_notifier",
+    embed = [":event_notifier_lib"],
+    visibility = ["//visibility:public"],
+)

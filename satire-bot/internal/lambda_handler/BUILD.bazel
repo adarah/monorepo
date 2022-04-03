@@ -1,0 +1,12 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "lambda_handler",
+    srcs = ["ping_pong.go"],
+    importpath = "github.com/adarah/satirebot/internal/lambda_handler",
+    visibility = ["//satire-bot:__subpackages__"],
+    deps = [
+        "//satire-bot/internal/discord",
+        "//satire-bot/internal/event",
+    ],
+)
