@@ -11,13 +11,15 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    environment: production
     steps:
       - uses: actions/checkout@v3
 
       - name: Build
         run: |
-          bazel build --remote_cache=https://storage.googleapis.com/bazel_cache_bucket_adarah --google_default_credentials //...
+          echo "$GOOGLE_SERVICE_ACCOUNT" > /tmp/credentials.json
+          bazel build --remote_cache=https://storage.googleapis.com/bazel_cache_bucket_adarah --google_credentials=/tmp/credentials.json //...
+        env:
+          GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
 
       - name: Test
         run: |
@@ -25,7 +27,6 @@ jobs:
 
   plan:
     runs-on: ubuntu-latest
-    environment: production
     defaults:
       run:
         working-directory: infrastructure
