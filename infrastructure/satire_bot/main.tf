@@ -30,11 +30,16 @@ resource "aws_iam_role" "assume_role" {
         Effect = "Allow"
         Sid    = ""
         Principal = {
-          Service = "ec2.amazonaws.com"
+          Service = "lambda.amazonaws.com"
         }
       },
     ]
   })
+}
+
+resource "aws_iam_role_policy_attachment" "basic" {
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+  role       = aws_iam_role.assume_role.name
 }
 
 data "aws_region" "current" {}
@@ -43,7 +48,7 @@ resource "aws_lambda_function" "ping_pong" {
   function_name = "ping_pong"
   role          = aws_iam_role.assume_role.arn
   runtime       = "go1.x"
-  filename      = "bazel-bin/satire-bot/ping_pong_handler.zip"
+  filename      = "../bazel-bin/satire-bot/ping_pong_handler.zip"
   handler       = "ping_pong"
   environment {
     variables = {
