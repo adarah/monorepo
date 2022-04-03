@@ -4,6 +4,11 @@
 resource "heroku_app" "satire_bot" {
   name   = "satire-bot"
   region = var.region
+  sensitive_config_vars = {
+    SATBOT_PING_PONG_ARN = aws_lambda_function.ping_pong.arn
+    SATBOT_DISCORD_TOKEN = ""
+    SATBOT_AWS_REGION    = data.aws_region.current.name
+  }
 }
 
 resource "heroku_build" "satire_bot" {
@@ -39,11 +44,10 @@ resource "aws_lambda_function" "ping_pong" {
   role          = aws_iam_role.assume_role.arn
   runtime       = "go1.x"
   filename      = "bazel-bin/satire-bot/ping_pong_handler.zip"
+  handler       = "ping_pong"
   environment {
     variables = {
-      SATBOT_PING_PONG_ARN = aws_lambda_function.ping_pong.arn
       SATBOT_DISCORD_TOKEN = ""
-      SATBOT_AWS_REGION    = data.aws_region.current.name
     }
   }
 }
