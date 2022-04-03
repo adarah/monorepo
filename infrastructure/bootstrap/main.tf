@@ -4,9 +4,10 @@
 
 resource "aws_s3_bucket" "tf_state_bucket" {
   bucket_prefix = "tf-state"
+  force_destroy = true
 
   lifecycle {
-    prevent_destroy = true
+    prevent_destroy = false
   }
 }
 
@@ -33,5 +34,27 @@ resource "aws_dynamodb_table" "tf_state_lock_table" {
   attribute {
     name = "LockID"
     type = "S"
+  }
+}
+
+
+#  ╭──────────────────────────────────────────────────────────╮
+#  │ Bazel cache bucket                                       │
+#  ╰──────────────────────────────────────────────────────────╯
+
+resource "google_storage_bucket" "bazel_cache_bucket" {
+  name          = "bazel_cache_bucket_adarah"
+  location      = "US-EAST4"
+  force_destroy = true
+  uniform_bucket_level_access = true
+
+
+  lifecycle_rule {
+    condition {
+      age = 30
+    }
+    action {
+      type = "Delete"
+    }
   }
 }

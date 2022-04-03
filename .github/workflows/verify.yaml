@@ -14,15 +14,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Mount bazel cache
-        uses: actions/cache@v3
-        with:
-          path: "/home/runner/.cache/bazel"
-          key: bazel
-
       - name: Build
         run: |
-          bazel build //...
+          echo "$GOOGLE_SERVICE_ACCOUNT" > /tmp/credentials.json
+          bazel build --remote_cache=https://storage.googleapis.com/bazel_cache_bucket_adarah --google_credentials=/tmp/credentials.json //...
+        env:
+          GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
 
       - name: Test
         run: |
@@ -30,7 +27,6 @@ jobs:
 
   plan:
     runs-on: ubuntu-latest
-    environment: production
     defaults:
       run:
         working-directory: infrastructure
@@ -91,9 +87,7 @@ jobs:
             ${process.env.PLAN}
             \`\`\`
 
-            </details>
-
-            *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`infrastructure\`, Workflow: \`${{ github.workflow }}\`*`;
+            </details>`;
               
             github.rest.issues.createComment({
               issue_number: context.issue.number,
