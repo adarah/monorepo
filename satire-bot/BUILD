@@ -7,13 +7,17 @@ gazelle(name = "gazelle")
 gazelle(
     name = "gazelle-update-repos",
     args = [
-        "-from_file=satire-bot/go.mod"
+        "-from_file=satire-bot/go.mod",
     ],
     command = "update-repos",
-
 )
 
 pkg_zip(
-    name = "ping_pong_handler",
+    name = "ping_pong",
     srcs = ["//satire-bot/cmd/lambda/ping_pong"],
+)
+
+pkg_zip(
+    name = "pong_ping",
+    srcs = ["//satire-bot/cmd/lambda/pong_ping"],
 )

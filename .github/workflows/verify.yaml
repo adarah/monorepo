@@ -47,6 +47,7 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
       HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
+      TF_VAR_satbot_discord_token: ${{ secrets.DISCORD_TOKEN }}
     steps:
       - uses: actions/checkout@v3
 
