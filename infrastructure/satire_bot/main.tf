@@ -38,7 +38,7 @@ resource "aws_lambda_function" "ping_pong" {
   runtime       = "go1.x"
   filename =  "bazel-bin/satire-bot/ping_pong_handler.zip"
   environment {
-    variables {
+    variables = {
       SATBOT_PING_PONG_ARN = aws_lambda_function.ping_pong.arn
       SATBOT_DISCORD_TOKEN = ""
       SATBOT_AWS_REGION    = aws.region
