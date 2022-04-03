@@ -45,11 +45,12 @@ resource "aws_iam_role_policy_attachment" "basic" {
 data "aws_region" "current" {}
 
 resource "aws_lambda_function" "ping_pong" {
-  function_name = "ping_pong"
-  role          = aws_iam_role.assume_role.arn
-  runtime       = "go1.x"
-  filename      = "../bazel-bin/satire-bot/ping_pong_handler.zip"
-  handler       = "ping_pong"
+  function_name    = "ping_pong"
+  role             = aws_iam_role.assume_role.arn
+  runtime          = "go1.x"
+  filename         = "../bazel-bin/satire-bot/ping_pong_handler.zip"
+  handler          = "ping_pong"
+  source_code_hash = filebase64sha256("../bazel-bin/satire-bot/ping_pong_handler.zip")
   environment {
     variables = {
       SATBOT_DISCORD_TOKEN = ""
