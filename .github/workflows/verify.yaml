@@ -87,9 +87,7 @@ jobs:
             ${process.env.PLAN}
             \`\`\`
 
-            </details>
-
-            *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`infrastructure\`, Workflow: \`${{ github.workflow }}\`*`;
+            </details>`;
               
             github.rest.issues.createComment({
               issue_number: context.issue.number,
