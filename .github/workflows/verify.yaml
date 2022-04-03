@@ -68,7 +68,7 @@ jobs:
 
       - uses: actions/github-script@v6
         env:
-          PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+          PLAN: "stdout:\n${{ steps.plan.outputs.stdout }}\nstderr:\n${{ steps.plan.outputs.stderr }}"
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
