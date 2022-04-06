@@ -24,17 +24,20 @@ impl Default for Camera {
         let lower_left_corner =
             ORIGIN - HORIZONTAL / 2.0 - VERTICAL / 2.0 - Point3::new(0.0, 0.0, FOCAL_LENGTH);
 
-        return Self {
+        Self {
             origin: ORIGIN,
             horizontal: HORIZONTAL,
             vertical: VERTICAL,
             lower_left_corner,
-        };
+        }
     }
 }
 
 impl Camera {
     pub fn shoot_ray(&self, x: f64, y: f64) -> Ray {
-        Ray::new(self.origin, self.lower_left_corner + self.horizontal * x + self.vertical * y)
+        Ray::new(
+            self.origin,
+            self.lower_left_corner + self.horizontal * x + self.vertical * y,
+        )
     }
 }

@@ -1,5 +1,6 @@
 module "satire_bot" {
-  source   = "./satire_bot"
-  region   = "us"
-  src_path = "../satire-bot"
+  source        = "../satire-bot/iac"
+  heroku_region = "us"
+  aws_region    = "us-east-1"
+  discord_token = var.discord_token
 }

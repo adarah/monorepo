@@ -1,4 +1,4 @@
-use crate::{ray::Ray, vec3::Color, hittable::HitRecord};
+use crate::{hittable::HitRecord, ray::Ray, vec3::Color};
 
 pub mod lambertian;
 pub mod metal;

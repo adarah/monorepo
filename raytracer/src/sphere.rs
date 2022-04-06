@@ -2,19 +2,24 @@ use std::rc::Rc;
 
 use crate::{
     hittable::{HitRecord, Hittable},
+    material::Material,
     ray::Ray,
-    vec3::Point3, material::Material,
+    vec3::Point3,
 };
 
 pub struct Sphere {
     center: Point3,
     radius: f64,
-    material: Rc<dyn Material>
+    material: Rc<dyn Material>,
 }
 
 impl Sphere {
     pub fn new(center: Point3, radius: f64, material: Rc<dyn Material>) -> Self {
-        Sphere { center, radius, material }
+        Sphere {
+            center,
+            radius,
+            material,
+        }
     }
 }
 
@@ -42,7 +47,6 @@ impl Hittable for Sphere {
             }
         }
 
-
         let point = ray.at(root);
         let normal = (point - self.center).unit();
         // Dot product of vectors in opposite directions is negative.
@@ -58,6 +62,6 @@ impl Hittable for Sphere {
             material: Rc::clone(&self.material),
         };
 
-        return Some(record);
+        Some(record)
     }
 }

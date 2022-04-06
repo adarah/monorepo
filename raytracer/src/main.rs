@@ -71,7 +71,13 @@ fn main() -> Result<()> {
     Ok(())
 }
 
-fn get_pixel_color(camera: &Camera, scene: &Scene, pixel_x: usize, pixel_y: usize, num_samples: usize) -> Color {
+fn get_pixel_color(
+    camera: &Camera,
+    scene: &Scene,
+    pixel_x: usize,
+    pixel_y: usize,
+    num_samples: usize,
+) -> Color {
     let mut c = Color::BLACK;
     for _ in 0..num_samples {
         let rand_0 = RNG.with(|rng| rng.borrow_mut().gen_range(0.0..1.0));
@@ -80,9 +86,9 @@ fn get_pixel_color(camera: &Camera, scene: &Scene, pixel_x: usize, pixel_y: usiz
         let y_norm = (pixel_y as f64 + rand_1) / (IMG_HEIGHT - 1) as f64;
 
         let r = camera.shoot_ray(x_norm, y_norm);
-        c += r.color(&scene);
+        c += r.color(scene);
     }
-    return c / num_samples as f64;
+    c / num_samples as f64
 }
 
 #[cfg(test)]

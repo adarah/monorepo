@@ -26,6 +26,6 @@ impl Scene {
                 _ => (),
             }
         }
-        return closest_hit;
+        closest_hit
     }
 }

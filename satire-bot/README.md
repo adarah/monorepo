@@ -2,7 +2,7 @@
 This is a Discord bot written for my Lost Ark guild. The bot is named after the awful name of the guild (we offered to pay for a name change ticket but the Guild leader refused 😔). You can find us in the NA East Una server.
 
 ## Architecture
-TODO: Add a fancy diagram here. 
+TODO: Add a fancy diagram here.
 
 ### Requirements
 - The project should be as cheap as possible to run (ideally free!).

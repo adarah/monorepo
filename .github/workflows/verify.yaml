@@ -1,3 +1,4 @@
+---
 name: Verify
 
 on:
@@ -9,8 +10,14 @@ on:
       - main
 
 jobs:
-  test:
+  build-and-plan:
     runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+      HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
+      TF_VAR_discord_token: ${{ secrets.DISCORD_TOKEN }}
     steps:
       - uses: actions/checkout@v3
 
@@ -21,48 +28,39 @@ jobs:
         env:
           GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
 
-      - name: Test
-        run: |
-          bazel test //...
-
-  plan:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: infrastructure
-
-    if: github.event_name == 'pull_request'
-    env:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-      HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
-    steps:
-      - uses: actions/checkout@v3
-
       - uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: ~1.1
+        if: github.event_name == 'pull_request'
 
       - name: Terraform format
         id: fmt
         run: terraform fmt -check -recursive
         continue-on-error: true
+        if: github.event_name == 'pull_request'
 
       - name: Terraform init
         id: init
         run: terraform init
+        if: github.event_name == 'pull_request'
+        working-directory: infrastructure
 
       - name: Terraform Validate
         id: validate
         run: terraform validate -no-color
+        continue-on-error: true
+        if: github.event_name == 'pull_request'
+        working-directory: infrastructure
 
       - name: Terraform plan
         id: plan
         run: terraform plan -no-color
         continue-on-error: true
+        if: github.event_name == 'pull_request'
+        working-directory: infrastructure
 
       - uses: actions/github-script@v6
+        if: github.event_name == 'pull_request'
         env:
           PLAN: "stdout:\n${{ steps.plan.outputs.stdout }}\nstderr:\n${{ steps.plan.outputs.stderr }}"
         with:
@@ -99,3 +97,11 @@ jobs:
       - name: Terraform Plan Status
         if: steps.plan.outcome == 'failure'
         run: exit 1
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Test
+        run: |
+          bazel test //...

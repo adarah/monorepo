@@ -2,17 +2,14 @@ load("@io_bazel_rules_go//go:def.bzl", "go_library")
 
 go_library(
     name = "notifier",
-    srcs = [
-        "message.go",
-        "reaction.go",
-    ],
+    srcs = ["message.go"],
     importpath = "github.com/adarah/satirebot/internal/notifier",
     visibility = ["//satire-bot:__subpackages__"],
     deps = [
         "//satire-bot/config",
         "//satire-bot/internal/event",
-        "@com_github_aws_aws_sdk_go_v2//aws:go_default_library",
-        "@com_github_aws_aws_sdk_go_v2_service_lambda//:go_default_library",
-        "@com_github_bwmarrin_discordgo//:go_default_library",
+        "@com_github_aws_aws_sdk_go_v2//aws",
+        "@com_github_aws_aws_sdk_go_v2_service_lambda//:lambda",
+        "@com_github_bwmarrin_discordgo//:discordgo",
     ],
 )

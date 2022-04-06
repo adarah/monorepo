@@ -9,10 +9,10 @@ go_library(
         "//satire-bot/config",
         "//satire-bot/internal/discord",
         "//satire-bot/internal/notifier",
-        "@com_github_aws_aws_sdk_go_v2_config//:go_default_library",
-        "@com_github_aws_aws_sdk_go_v2_service_lambda//:go_default_library",
-        "@com_github_bwmarrin_discordgo//:go_default_library",
-        "@com_github_kelseyhightower_envconfig//:go_default_library",
+        "@com_github_aws_aws_sdk_go_v2_config//:config",
+        "@com_github_aws_aws_sdk_go_v2_service_lambda//:lambda",
+        "@com_github_bwmarrin_discordgo//:discordgo",
+        "@com_github_kelseyhightower_envconfig//:envconfig",
     ],
 )
 
