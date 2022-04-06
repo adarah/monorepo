@@ -5,9 +5,6 @@ on:
   pull_request:
     branches:
       - main
-  push:
-    branches:
-      - main
 
 jobs:
   build-and-plan:
@@ -31,36 +28,30 @@ jobs:
       - uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: ~1.1
-        if: github.event_name == 'pull_request'
 
       - name: Terraform format
         id: fmt
         run: terraform fmt -check -recursive
         continue-on-error: true
-        if: github.event_name == 'pull_request'
 
       - name: Terraform init
         id: init
         run: terraform init
-        if: github.event_name == 'pull_request'
         working-directory: infrastructure
 
       - name: Terraform Validate
         id: validate
         run: terraform validate -no-color
         continue-on-error: true
-        if: github.event_name == 'pull_request'
         working-directory: infrastructure
 
       - name: Terraform plan
         id: plan
         run: terraform plan -no-color
         continue-on-error: true
-        if: github.event_name == 'pull_request'
         working-directory: infrastructure
 
       - uses: actions/github-script@v6
-        if: github.event_name == 'pull_request'
         env:
           PLAN: "stdout:\n${{ steps.plan.outputs.stdout }}\nstderr:\n${{ steps.plan.outputs.stderr }}"
         with:
@@ -77,7 +68,7 @@ jobs:
 
             </details>
 
-            #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+            #### Terraform Plan 📖
 
             <details><summary>Show Plan</summary>
 
@@ -95,7 +86,7 @@ jobs:
             })
 
       - name: Terraform Plan Status
-        if: steps.plan.outcome == 'failure'
+        if: steps.fmt.outcome == 'failure' || steps.validate.outcome == 'failure' || steps.plan.outcome == 'failure'
         run: exit 1
 
   test:
