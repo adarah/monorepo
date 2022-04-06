@@ -20,13 +20,18 @@ jobs:
           bazel build --remote_cache=https://storage.googleapis.com/bazel_cache_bucket_adarah --google_credentials=/tmp/credentials.json //...
         env:
           GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
+
+      # This is a hack to work around the upload-artifact action not working with symlinks
+      # See: https://github.com/actions/upload-artifact/issues/92
+      - run: echo "UPLOAD_PATH=$(readlink -f bazel-bin)" >> $GITHUB_ENV
       
       - uses: actions/upload-artifact@v3
         with:
           name: bazel-bin
-          path: bazel-bin/
+          path: ${{ env.UPLOAD_PATH }}
 
   test:
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -47,7 +52,7 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
       HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
-      TF_VAR_satbot_discord_token: ${{ secrets.DISCORD_TOKEN }}
+      TF_VAR_discord_token: ${{ secrets.DISCORD_TOKEN }}
     steps:
       - uses: actions/checkout@v3
 
