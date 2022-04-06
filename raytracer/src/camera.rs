@@ -6,7 +6,7 @@ use crate::{
 pub struct Camera {
     origin: Point3,
     horizontal: Vec3,
-            vertical: Vec3,
+    vertical: Vec3,
     lower_left_corner: Point3,
 }
 
@@ -35,6 +35,9 @@ impl Default for Camera {
 
 impl Camera {
     pub fn shoot_ray(&self, x: f64, y: f64) -> Ray {
-        Ray::new(self.origin, self.lower_left_corner + self.horizontal * x + self.vertical * y)
+        Ray::new(
+            self.origin,
+            self.lower_left_corner + self.horizontal * x + self.vertical * y,
+        )
     }
 }
