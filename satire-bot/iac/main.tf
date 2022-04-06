@@ -28,7 +28,7 @@ resource "aws_lambda_function" "satire_lambdas" {
   function_name    = each.key
   role             = aws_iam_role.assume_role.arn
   runtime          = "go1.x"
-  filename         = "../../bazel-bin/satire-bot/${each.key}.zip"
+  filename         = "${path.module}/../../bazel-bin/satire-bot/${each.key}.zip"
   handler          = each.key
   source_code_hash = filebase64sha256("${path.module}/../../bazel-bin/satire-bot/${each.key}.zip")
   environment {
