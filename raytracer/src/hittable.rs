@@ -1,6 +1,10 @@
 use std::rc::Rc;
 
-use crate::{ray::Ray, vec3::{Point3, Vec3}, material::Material};
+use crate::{
+    material::Material,
+    ray::Ray,
+    vec3::{Point3, Vec3},
+};
 
 pub struct HitRecord {
     pub point: Point3,

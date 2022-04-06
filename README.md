@@ -11,7 +11,7 @@ Below is a short description of each project. You can get more details in each p
 ```
 
 ## Build
-To build and test this whole repository, you will only need bazel installed. I recommend getting it via bazelisk as detailed [here](https://github.com/bazelbuild/bazelisk): 
+To build and test this whole repository, you will only need bazel installed. I recommend getting it via bazelisk as detailed [here](https://github.com/bazelbuild/bazelisk):
 
 To build all projects, run:
 ```bash

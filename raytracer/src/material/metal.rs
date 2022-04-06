@@ -18,6 +18,6 @@ impl Material for Metal {
         if reflected.dot(hit_rec.normal) < 0.0 {
             return None;
         }
-        return Some((Ray::new(hit_rec.point, reflected), self.color));
+        Some((Ray::new(hit_rec.point, reflected), self.color))
     }
 }

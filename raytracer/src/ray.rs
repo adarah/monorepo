@@ -1,6 +1,6 @@
 use crate::{
     scene::Scene,
-    vec3::{Color, Point3, Vec3}
+    vec3::{Color, Point3, Vec3},
 };
 
 pub struct Ray {
@@ -33,12 +33,12 @@ impl Ray {
             return Color::BLACK;
         }
 
-        return self.background_color();
+        self.background_color()
     }
 
     fn background_color(&self) -> Color {
         let dir = self.direction.unit();
         let t = 0.5 * (dir.y + 1.0);
-        return (1.0 - t) * Color::WHITE + t * Color::LIGHT_BLUE;
+        (1.0 - t) * Color::WHITE + t * Color::LIGHT_BLUE
     }
 }

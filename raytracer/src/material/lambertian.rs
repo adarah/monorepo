@@ -22,6 +22,6 @@ impl Material for Lambertian {
         if scatter_direction.near_zero() {
             scatter_direction = hit_rec.normal;
         }
-        return Some((Ray::new(hit_rec.point, scatter_direction), self.color));
+        Some((Ray::new(hit_rec.point, scatter_direction), self.color))
     }
 }
