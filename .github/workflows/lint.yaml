@@ -45,11 +45,14 @@ jobs:
       - name: Lint Code Base
         uses: github/super-linter@v4
         env:
-          VALIDATE_ALL_CODEBASE: true
+          VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VALIDATE_TERRAFORM_TERRASCAN: false # Returns irrelevant warnings
           VALIDATE_GO: false # Golangci-lint breaks when called on individual files
+          # We only care about rust 2021
+          VALIDATE_RUST_2015: false
+          VALIDATE_RUST_2018: false
 
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v2

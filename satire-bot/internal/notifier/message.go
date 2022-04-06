@@ -23,11 +23,14 @@ func MessageCreate(client *lambda.Client, conf config.Specification) func(s *dis
 				return err
 			}
 
-			client.Invoke(context.TODO(), &lambda.InvokeInput{
+			_, err = client.Invoke(context.TODO(), &lambda.InvokeInput{
 				FunctionName:   aws.String(conf.PingPongArn),
 				InvocationType: "Event",
 				Payload:        payload,
 			})
+			if err != nil {
+				return err
+			}
 		}
 		return nil
 	}
