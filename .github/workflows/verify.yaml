@@ -1,3 +1,4 @@
+---
 name: Verify
 
 on:
@@ -104,4 +105,3 @@ jobs:
       - name: Test
         run: |
           bazel test //...
-
