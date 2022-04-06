@@ -23,9 +23,11 @@ jobs:
 
       # This is a hack to work around the upload-artifact action not working with symlinks
       # See: https://github.com/actions/upload-artifact/issues/92
-      - run: echo "UPLOAD_PATH=$(readlink -f bazel-bin)" >> $GITHUB_ENV
+      - name: Dereference bazel-bin symlink
+        run: echo "UPLOAD_PATH=$(readlink -f bazel-bin)" >> $GITHUB_ENV
       
-      - uses: actions/upload-artifact@v3
+      - name: Save bazel-bin artifact
+        uses: actions/upload-artifact@v3
         with:
           name: bazel-bin
           path: ${{ env.UPLOAD_PATH }}
@@ -56,7 +58,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: actions/download-artifact@v3
+      - name: Download bazel-bin artifact
+        uses: actions/download-artifact@v3
         with:
           name: bazel-bin
           path: bazel-bin/
@@ -69,6 +72,7 @@ jobs:
         id: fmt
         run: terraform fmt -check -recursive
         continue-on-error: true
+        working-directory: ..
 
       - name: Terraform init
         id: init
@@ -77,6 +81,7 @@ jobs:
       - name: Terraform Validate
         id: validate
         run: terraform validate -no-color
+        continue-on-error: true
 
       - name: Terraform plan
         id: plan

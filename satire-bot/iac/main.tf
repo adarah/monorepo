@@ -50,14 +50,14 @@ resource "aws_iam_user" "event_notifier" {
 }
 
 resource "aws_iam_user_policy" "event_notifier" {
-  user        = aws_iam_user.event_notifier.name
+  user = aws_iam_user.event_notifier.name
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
         Action   = "lambda:InvokeFunction"
         Effect   = "Allow",
-        Resource = [for _, l in aws_lambda_function.satire_lambdas: l.arn]
+        Resource = [for _, l in aws_lambda_function.satire_lambdas : l.arn]
       }
     ]
   })

@@ -43,9 +43,9 @@ resource "aws_dynamodb_table" "tf_state_lock_table" {
 #  ╰──────────────────────────────────────────────────────────╯
 
 resource "google_storage_bucket" "bazel_cache_bucket" {
-  name          = "bazel_cache_bucket_adarah"
-  location      = "US-EAST4"
-  force_destroy = true
+  name                        = "bazel_cache_bucket_adarah"
+  location                    = "US-EAST4"
+  force_destroy               = true
   uniform_bucket_level_access = true
 
 
