@@ -16,7 +16,7 @@ resource "aws_iam_role" "assume_role" {
       },
     ]
   })
-        managed_policy_arns = ["arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"]
+  managed_policy_arns = ["arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"]
 }
 
 

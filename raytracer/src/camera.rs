@@ -6,7 +6,7 @@ use crate::{
 pub struct Camera {
     origin: Point3,
     horizontal: Vec3,
-            vertical: Vec3,
+    vertical: Vec3,
     lower_left_corner: Point3,
 }
 

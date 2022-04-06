@@ -14,7 +14,7 @@ gazelle(
 
 pkg_zip(
     name = "ping_pong",
-            srcs = ["//satire-bot/cmd/lambda/ping_pong"],
+    srcs = ["//satire-bot/cmd/lambda/ping_pong"],
 )
 
 pkg_zip(

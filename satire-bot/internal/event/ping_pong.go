@@ -1,6 +1,6 @@
 package event
 
 type PingPong struct {
-			ChannelID string
+	ChannelID string
 	IsPing    bool
 }

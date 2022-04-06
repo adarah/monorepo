@@ -76,7 +76,7 @@ jobs:
 
             </details>
 
-            #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+            #### Terraform Plan 📖
 
             <details><summary>Show Plan</summary>
 
@@ -94,7 +94,7 @@ jobs:
             })
 
       - name: Terraform Plan Status
-        if: steps.plan.outcome == 'failure'
+        if: steps.fmt.outcome == 'failure' || steps.validate.outcome == 'failure ' || steps.plan.outcome == 'failure'
         run: exit 1
 
   test:
