@@ -1,3 +1,4 @@
+# These terraform files can't live under an `iac` directory because of this issue: https://github.com/heroku/terraform-provider-heroku/issues/269
 #  ╭──────────────────────────────────────────────────────────╮
 #  │ Aws lambdas                                              │
 #  ╰──────────────────────────────────────────────────────────╯
@@ -22,15 +23,15 @@ resource "aws_iam_role" "assume_role" {
 
 resource "aws_lambda_function" "satire_lambdas" {
   for_each = toset([
-    for f in fileset("${path.module}/../cmd/lambda", "**/*.go") :
+    for f in fileset("${path.module}/cmd/lambda", "**/*.go") :
     dirname(f)
   ])
   function_name    = each.key
   role             = aws_iam_role.assume_role.arn
   runtime          = "go1.x"
-  filename         = "${path.module}/../../bazel-bin/satire-bot/${each.key}.zip"
+  filename         = "${path.module}/../bazel-bin/satire-bot/${each.key}.zip"
   handler          = each.key
-  source_code_hash = filebase64sha256("${path.module}/../../bazel-bin/satire-bot/${each.key}.zip")
+  source_code_hash = filebase64sha256("${path.module}/../bazel-bin/satire-bot/${each.key}.zip")
   environment {
     variables = {
       SATBOT_DISCORD_TOKEN = var.discord_token
@@ -90,6 +91,6 @@ resource "heroku_app" "satire_bot" {
 resource "heroku_build" "satire_bot" {
   app_id = heroku_app.satire_bot.id
   source {
-    path = "${path.module}/.."
+    path = path.module
   }
 }
