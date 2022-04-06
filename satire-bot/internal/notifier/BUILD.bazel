@@ -2,10 +2,7 @@ load("@io_bazel_rules_go//go:def.bzl", "go_library")
 
 go_library(
     name = "notifier",
-    srcs = [
-        "message.go",
-        "reaction.go",
-    ],
+    srcs = ["message.go"],
     importpath = "github.com/adarah/satirebot/internal/notifier",
     visibility = ["//satire-bot:__subpackages__"],
     deps = [
