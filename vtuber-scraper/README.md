@@ -1,0 +1,1 @@
+This is simple a scraper I wrote using Deno to grab all the photos and names from vtubers found in https://virtualyoutuber.fandom.com
